@@ -1,4 +1,4 @@
-package cmd
+package types
 
 type OTP struct {
 	Key       string `json:"key"`

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/oktayd98/totp/types"
 	"github.com/oktayd98/totp/utils"
 	"github.com/spf13/cobra"
 )
@@ -35,13 +36,13 @@ func create(key string, name string) {
 	}
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		initialData := OTPData{OTPs: []OTP{}}
+		initialData := types.OTPData{OTPs: []types.OTP{}}
 		saveJSONToFile(initialData, filePath)
 	}
 
 	existingData := readJSONFromFile(filePath)
 
-	newOTP := OTP{
+	newOTP := types.OTP{
 		Key:       key,
 		Name:      name,
 		CreatedAt: time.Now().Unix(),
@@ -52,7 +53,7 @@ func create(key string, name string) {
 	saveJSONToFile(existingData, filePath)
 }
 
-func saveJSONToFile(data OTPData, filePath string) {
+func saveJSONToFile(data types.OTPData, filePath string) {
 	file, err := os.Create(filePath)
 
 	defer func() {
@@ -76,8 +77,8 @@ func saveJSONToFile(data OTPData, filePath string) {
 	}
 }
 
-func readJSONFromFile(filePath string) OTPData {
-	data := OTPData{}
+func readJSONFromFile(filePath string) types.OTPData {
+	data := types.OTPData{}
 
 	fi, err := os.Open(filePath)
 
