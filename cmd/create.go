@@ -4,7 +4,6 @@ Copyright © 2023 Oktay Dönmez <oktaydonmez98@gmail.com>
 package cmd
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"time"
@@ -37,10 +36,10 @@ func create(key string, name string) {
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		initialData := types.OTPData{OTPs: []types.OTP{}}
-		saveJSONToFile(initialData, filePath)
+		utils.SaveJSONToFile(initialData, filePath)
 	}
 
-	existingData := readJSONFromFile(filePath)
+	existingData := utils.ReadJSONFromFile(filePath)
 
 	newOTP := types.OTP{
 		Key:       key,
@@ -50,49 +49,7 @@ func create(key string, name string) {
 
 	existingData.OTPs = append(existingData.OTPs, newOTP)
 
-	saveJSONToFile(existingData, filePath)
-}
-
-func saveJSONToFile(data types.OTPData, filePath string) {
-	file, err := os.Create(filePath)
-
-	defer func() {
-		if closeErr := file.Close(); closeErr != nil {
-			panic(err)
-		}
-	}()
-
-	if err != nil {
-		panic(err)
-	}
-
-	jsonData, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = file.Write(jsonData)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func readJSONFromFile(filePath string) types.OTPData {
-	data := types.OTPData{}
-
-	fi, err := os.Open(filePath)
-
-	if err != nil {
-		panic(err)
-	}
-
-	err = json.NewDecoder(fi).Decode(&data)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return data
+	utils.SaveJSONToFile(existingData, filePath)
 }
 
 func init() {
