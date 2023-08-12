@@ -5,6 +5,8 @@ import (
 	"crypto/sha1"
 	"encoding/base32"
 	"encoding/binary"
+	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
@@ -40,7 +42,8 @@ func decodeKey(key string) []byte {
 	decoded, err := base32.StdEncoding.DecodeString(key)
 
 	if err != nil {
-		panic(err)
+		fmt.Println("Invalid OTP key found!")
+		os.Exit(1)
 	}
 
 	return decoded

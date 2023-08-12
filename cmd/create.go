@@ -4,6 +4,8 @@ Copyright © 2023 Oktay Dönmez <oktaydonmez98@gmail.com>
 package cmd
 
 import (
+	"encoding/base32"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -27,6 +29,13 @@ var createCmd = &cobra.Command{
 }
 
 func create(key string, name string) {
+	_, DecodeErr := base32.StdEncoding.DecodeString(key)
+
+	if DecodeErr != nil {
+		fmt.Println("Invalid OTP key:", DecodeErr)
+		os.Exit(1)
+	}
+
 	filePath := utils.GetFilePath()
 	dirPath := filepath.Dir(filePath)
 
