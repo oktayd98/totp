@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/oktayd98/totp/types"
 	"github.com/oktayd98/totp/utils"
@@ -19,14 +20,17 @@ var getCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 
-		result := get(name)
-
-		fmt.Println(result)
+		get(name)
 	},
 }
 
-func get(name string) string {
+func get(name string) {
 	filePath := utils.GetFilePath()
+
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		fmt.Println("File could not find. You must run create command first.")
+		return
+	}
 
 	data := utils.ReadJSONFromFile(filePath)
 	var record types.OTP
@@ -40,7 +44,7 @@ func get(name string) string {
 
 	otpString := utils.GenerateOTP(record.Key)
 
-	return otpString
+	fmt.Println(otpString)
 }
 
 func init() {
